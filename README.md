@@ -15,15 +15,15 @@ There is no data in this github as the file was to big, please download it from 
 Source: eCommerce Behavior Data from Multi-Category Store — published on Kaggle by Michael Kechinov.
 The original dataset contains roughly 42 million events across two months (October–November 2019) from a large multi-category online store.
 Original columns:
-event_time - when an event happened
-event_type - did the customer view, put it into cart, remove from cart, or purchase items
-product_id - the product id
-category_id - the category id
-category_code - discription of what kind of product (ex: electronics.smartphone, appliances.sewingmachine)
-Brand - brand name
-Price - price of product
-user_id - permanent user_id
-user_session - user session ID
+* event_time - Timestamp of the event
+* event_type - view, cart, remove_from_cart, or purchase
+* product_id - Unique product identifier
+* category_id - Numeric category identifier
+* category_code - Human-readable category (e.g. electronics.smartphone)
+* Brand - Brand name
+* Price - Product price
+* user_id - Permanent user identifier
+* user_session - Session identifier
 
 Columns retained for analysis: event_time, event_type, brand, user_id, user_session
 Columns dropped and why:
@@ -33,17 +33,17 @@ product_id — not relevant to brand-level analysis.
 price — retained initially but not used in the final analysis. A natural extension of this project would be to examine whether price moderates the brand familiarity effect.
 
 ## Methodology
-Group Assignment
+**Group Assignment**
 Each unique (user, brand) pair was treated as one observation. Groups were assigned at this level:
 * Control — the user encountered this brand in only one session (first-time visitor)
 * Treatment — the user encountered this brand across two or more sessions (returning visitor)
-Metrics
+**Metrics**
 * Primary: Purchase conversion rate — did this user-brand pair result in a purchase?
 * Secondary: Sessions to first purchase — how many sessions did it take before the user bought?
-Statistical Tests
+**Statistical Tests**
 * Two-proportion z-test (one-sided) for the primary metric. One-sided because the hypothesis is directional — we are testing whether treatment converts more, not just differently. This decision was made before examining results.
 * Mann-Whitney U test (one-sided) for the secondary metric. A non-parametric test was chosen because sessions-to-purchase data is heavily right-skewed and does not meet the normality assumption required for a t-test.
-Power Analysis
+**Power Analysis**
 A power analysis was conducted prior to running the tests to confirm adequate sample size. Assuming a minimum detectable effect (MDE) of 2 percentage points, α = 0.05, and 80% power, the required sample size was approximately 1,044 per group. Both groups far exceeded this threshold.
 
 
@@ -64,14 +64,14 @@ Returning brand visitors convert at a dramatically higher rate than first-time v
 The Zillow parallel: This mirrors the behavior of serious home buyers who repeatedly revisit saved listings, check price history, and compare neighborhoods before making an inquiry — as opposed to casual browsers who scroll once and leave. The implication for re-engagement campaigns is that the goal should be nurturing high-intent users over time, not pushing for immediate conversion.
 
 ## Limitations
-Observational data & reverse causality: This is the most important caveat. The magnitude of the lift (607%) likely reflects selection bias rather than a causal effect of brand familiarity. Returning visitors are probably higher-intent shoppers by nature — they came back because they intended to buy, not necessarily because they became more familiar with the brand. A true causal test would require randomized assignment, such as experimentally varying brand reminder touchpoints or re-engagement emails.
-Overpowered dataset: With over 10 million user-brand pairs, even a trivially small difference would register as statistically significant. Throughout this analysis, effect size and confidence intervals were prioritized alongside p-values to distinguish statistical significance from practical significance.
-Sessions metric is partially confounded: The treatment group has more sessions by definition (that is how they were classified as returning visitors), so the secondary metric should be interpreted cautiously.
+**Observational data & reverse causality**: This is the most important caveat. The magnitude of the lift (607%) likely reflects selection bias rather than a causal effect of brand familiarity. Returning visitors are probably higher-intent shoppers by nature — they came back because they intended to buy, not necessarily because they became more familiar with the brand. A true causal test would require randomized assignment, such as experimentally varying brand reminder touchpoints or re-engagement emails.
+**Overpowered dataset**: With over 10 million user-brand pairs, even a trivially small difference would register as statistically significant. Throughout this analysis, effect size and confidence intervals were prioritized alongside p-values to distinguish statistical significance from practical significance.
+**Sessions metric is partially confounded**: The treatment group has more sessions by definition (that is how they were classified as returning visitors), so the secondary metric should be interpreted cautiously.
 
 ## How to Run
-Dependencies:
+**Dependencies**:
 pip install pandas numpy scipy statsmodels matplotlib seaborn
-File path: Update line 47 in the script to point to your local copy of the CSV:
+File path: Update the cell with your actual file path:
 df = pd.read_csv("your/path/to/2019-Oct.csv")
 If you have both the October and November files, you can load both:
 df = pd.concat([pd.read_csv("2019-Oct.csv"), pd.read_csv("2019-Nov.csv")])
